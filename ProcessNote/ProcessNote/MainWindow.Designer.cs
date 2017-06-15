@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.processGrid = new System.Windows.Forms.DataGridView();
             this.procId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.procName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -49,6 +50,7 @@
             this.commentDisplayed = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.onTop = new System.Windows.Forms.Button();
             this.hide = new System.Windows.Forms.Button();
+            this.timer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.processGrid)).BeginInit();
             this.main.SuspendLayout();
             this.processes.SuspendLayout();
@@ -66,7 +68,6 @@
             this.processGrid.Name = "processGrid";
             this.processGrid.Size = new System.Drawing.Size(246, 434);
             this.processGrid.TabIndex = 1;
-            this.processGrid.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ProcessGrid_CellClick);
             // 
             // procId
             // 
@@ -252,6 +253,12 @@
             this.hide.UseVisualStyleBackColor = true;
             this.hide.Click += new System.EventHandler(this.Hide_Click);
             // 
+            // timer
+            // 
+            this.timer.Enabled = true;
+            this.timer.Interval = 1000;
+            this.timer.Tick += new System.EventHandler(this.Timer_Tick);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -296,6 +303,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn commentDisplayed;
         private System.Windows.Forms.Button onTop;
         private System.Windows.Forms.Button hide;
+        private System.Windows.Forms.Timer timer;
     }
 }
 

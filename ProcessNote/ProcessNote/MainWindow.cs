@@ -40,7 +40,7 @@ namespace ProcessNote
                 startTime.Text = clickedProcess.StartTime.ToString();
                 elapsedTime.Text = (DateTime.UtcNow - clickedProcess.StartTime.ToUniversalTime()).ToString();
             }
-            catch (Win32Exception exception)
+            catch (Win32Exception)
             {
                 startTime.Text = "N/A";
                 elapsedTime.Text = "N/A";
@@ -55,21 +55,16 @@ namespace ProcessNote
 
         private void SetCpuInfo(string procName)
         {
-            PerformanceCounter currentAppCPU = new PerformanceCounter("Process", "ID Process", procName, true);
-            cpu.Text = (currentAppCPU.NextValue() / Environment.ProcessorCount).ToString();
+            PerformanceCounter currentAppCPU = new PerformanceCounter("Process", "% Processor Time", procName);
+            cpu.Text = currentAppCPU.NextValue().ToString() + " %";
         }
-        
-        private void ProcessGrid_CellClick(object sender, DataGridViewCellEventArgs e)
+
+        private void SetMemInfo(Process proc)
         {
-            int selectedProcId = GetSelectedProcId();
-            Process clickedProcess = Process.GetProcessById(selectedProcId);
-
-            // Change Label fields for every Data
-            mem.Text = clickedProcess.WorkingSet64.ToString();
-            SetCpuInfo(clickedProcess.ProcessName);
-            SetTimes(clickedProcess);
+            long memory = proc.WorkingSet64;
+            mem.Text = ConvertBytesToMegabytes(memory).ToString() + " MB";
         }
-
+      
         private void SaveComment_Click(object sender, EventArgs e)
         {
             int selectedProcId = GetSelectedProcId();
@@ -92,6 +87,11 @@ namespace ProcessNote
 
         }
 
+        static double ConvertBytesToMegabytes(long bytes)
+        {
+            return (bytes / 1024f) / 1024f;
+        }
+
         private void OnTop_Click(object sender, EventArgs e)
         {
             TopMost = true;
@@ -100,6 +100,17 @@ namespace ProcessNote
         private void Hide_Click(object sender, EventArgs e)
         {
             TopMost = false;
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            int selectedProcId = GetSelectedProcId();
+            Process selectedProcess = Process.GetProcessById(selectedProcId);
+
+            // Change Label fields for every Data
+            SetMemInfo(selectedProcess);
+            SetCpuInfo(selectedProcess.ProcessName);
+            SetTimes(selectedProcess);
         }
     }
 }
